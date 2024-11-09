@@ -1,6 +1,6 @@
 import { json, redirect } from "@remix-run/node";
 import { Profile } from "../models"; // Import model Profile yang sudah kita buat
-import { getSession, commitSession } from "./session.server";
+import { getSession, commitSession, destroySession } from "./session.server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { connectDB } from "./db.server";
@@ -154,30 +154,7 @@ export async function logout(request: Request) {
   const session = await getSession(request.headers.get("Cookie"));
   return redirect("/login", {
     headers: {
-      "Set-Cookie": await sessionStorage.destroySession(session),
+      "Set-Cookie": await destroySession(session),
     },
   });
-}
-
-// Middleware untuk memverifikasi token JWT
-export async function authenticateToken(request: Request) {
-  const session = await getSession(request.headers.get("Cookie"));
-  const token = session.get("token");
-
-  if (!token) {
-    throw redirect("/login");
-  }
-
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET!);
-    const profile = await Profile.findById(payload).lean();
-
-    if (!profile) {
-      throw redirect("/login");
-    }
-
-    return profile;
-  } catch (error) {
-    throw redirect("/login");
-  }
 }

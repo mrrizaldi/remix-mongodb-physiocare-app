@@ -4,8 +4,6 @@ export interface UserData {
   role: string;
   username: string;
   avatar: string;
-  iat: number;
-  exp: number;
 }
 export type LoaderData = {
   token: string;

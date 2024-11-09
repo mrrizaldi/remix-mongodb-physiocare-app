@@ -20,12 +20,12 @@ export async function getUser(request: Request) {
   const token = session.get("token");
 
   if (!token) {
-    throw redirect("/login");
+    return redirect("/login");
   }
 
   const payload = parseJWT(token);
   if (!payload) {
-    throw redirect("/login");
+    return redirect("/login");
   }
 
   return payload;

@@ -3,14 +3,11 @@ const Schema = mongoose.Schema;
 
 // Schemas for enums as objects for better maintainability
 export const RoleTypes = {
-  STAFF: "STAFF",
-  PATIENT: "PATIENT",
-};
-
-export const StaffTypes = {
   ADMIN: "ADMIN",
   DOCTOR: "DOCTOR",
   OFFICER: "OFFICER",
+
+  PATIENT: "PATIENT",
 };
 
 export const SessionTypes = {
@@ -75,11 +72,7 @@ const staffSchema = new Schema(
       maxSalary: Number,
       minSalary: Number,
     },
-    type: {
-      type: String,
-      enum: Object.values(StaffTypes),
-      default: StaffTypes.DOCTOR,
-    },
+
     salary: { type: Number, default: 0 },
     joinDate: { type: Date, required: true },
     active: { type: Boolean, default: true },

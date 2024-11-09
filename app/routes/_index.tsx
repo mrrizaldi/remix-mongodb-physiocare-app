@@ -31,7 +31,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
 
   if (!user) {
-    throw redirect("/login");
+    return redirect("/login");
   }
 
   console.log("ini dari loader dashboard", user);
