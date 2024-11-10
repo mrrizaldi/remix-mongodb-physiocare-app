@@ -5,8 +5,8 @@ import { getSession } from "./session.server";
 
 export const protectRoute = async (
   request: Request,
-  allowedRoles: string[]
-) => {
+  allowedRoles?: string[]
+): Promise<Response> => {
   const session = await getSession(request.headers.get("Cookie"));
   const token = session.get("token");
 
@@ -18,7 +18,7 @@ export const protectRoute = async (
   try {
     const tokenPayload = jwt.verify(token, process.env.JWT_SECRET!) as UserData;
 
-    if (!allowedRoles.includes(tokenPayload.role)) {
+    if (allowedRoles && !allowedRoles.includes(tokenPayload.role)) {
       return redirect(`/dashboard/${tokenPayload.role}`);
     }
 

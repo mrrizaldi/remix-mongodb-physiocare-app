@@ -2,7 +2,7 @@ import { useOutletContext } from "@remix-run/react";
 import { ActionFunctionArgs, json, redirect } from "@remix-run/node";
 import { login, register } from "~/utils/auth.server";
 import { SignUpSchema } from "~/schema/auth";
-import { RegisterForm } from "./RegisterForm";
+import { RegisterForm } from "../../components/RegisterForm";
 
 export default function RegisterPage() {
   const { CardWrapper } = useOutletContext<{

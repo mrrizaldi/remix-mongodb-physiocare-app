@@ -3,7 +3,7 @@ import { Link, useOutletContext } from "@remix-run/react";
 import { ActionFunctionArgs, json, redirect } from "@remix-run/node";
 import { login } from "~/utils/auth.server";
 import { LoginSchema } from "~/schema/auth";
-import { LoginForm } from "./LoginForm";
+import { LoginForm } from "~/components/LoginForm";
 
 export default function LoginPage() {
   const { CardWrapper } = useOutletContext<{

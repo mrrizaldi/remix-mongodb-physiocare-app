@@ -1,8 +1,8 @@
 import { Outlet } from "@remix-run/react";
 import { json, LoaderFunction } from "@remix-run/node";
-import { getUser } from "~/utils/session.server";
 import SidebarComponent from "./sidebar";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
+import { protectRoute } from "~/utils/middleware.server";
 
 export default function DashboardLayout() {
   return (
@@ -20,7 +20,5 @@ export default function DashboardLayout() {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const user = await getUser(request);
-  console.log("ini dari loader dashboard", user);
-  return json({ user });
+  return protectRoute(request);
 };

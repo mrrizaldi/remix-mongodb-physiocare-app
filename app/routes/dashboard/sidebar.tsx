@@ -15,7 +15,7 @@ import {
 import { Skeleton } from "~/components/ui/skeleton";
 import { useAuth } from "./useAuth";
 import { Link, useLocation } from "@remix-run/react";
-import LogoutButton from "../_auth.logout/LogoutButton";
+import LogoutButton from "../../components/LogoutButton";
 
 const menuUserItems = [
   { icon: Home, label: "Home", href: "/dashboard" },
