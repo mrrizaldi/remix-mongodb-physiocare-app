@@ -5,9 +5,10 @@ export interface UserData {
   username: string;
   avatar: string;
 }
-export type LoaderData = {
-  token: string;
-};
+
+export interface LoaderData {
+  user: UserData;
+}
 
 export interface IProfile {
   _id: string;

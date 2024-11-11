@@ -1,6 +1,7 @@
-// app/routes/auth.tsx
+import { LoaderFunction } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 import { Card, CardContent } from "~/components/ui/card";
+import { protectAuthPage } from "~/utils/middleware.server";
 
 export default function AuthLayout() {
   return (
@@ -19,3 +20,7 @@ function CardWrapper({ children }: { children: React.ReactNode }) {
     </Card>
   );
 }
+
+export const loader: LoaderFunction = async ({ request }) => {
+  return protectAuthPage(request);
+};

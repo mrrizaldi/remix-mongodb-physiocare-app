@@ -9,10 +9,8 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarProvider,
   SidebarRail,
 } from "~/components/ui/sidebar";
-import { Skeleton } from "~/components/ui/skeleton";
 import { useAuth } from "./useAuth";
 import { Link, useLocation } from "@remix-run/react";
 import LogoutButton from "../../components/LogoutButton";

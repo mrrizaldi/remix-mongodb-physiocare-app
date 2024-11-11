@@ -1,11 +1,8 @@
 import { useRouteLoaderData } from "@remix-run/react";
-import type { UserData } from "~/types/auth";
+import { LoaderData } from "~/types/auth";
 
-interface LoaderData {
-  user: UserData;
-}
 export function useAuth() {
-  const data = useRouteLoaderData("routes/dashboard") as LoaderData;
+  const data = useRouteLoaderData("routes/dashboard/_layout") as LoaderData;
   return {
     user: data?.user,
     isAuthenticated: !!data?.user,

@@ -10,11 +10,5 @@ export default function DashboardIndexRoute() {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const authCheck = protectRoute(request, ["OFFICER"]);
-
-  if (authCheck instanceof Response) {
-    return authCheck;
-  }
-
-  return json({ authCheck });
+  return protectRoute(request, ["OFFICER"]);
 };
