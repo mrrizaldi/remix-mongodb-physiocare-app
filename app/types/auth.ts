@@ -6,7 +6,7 @@ export interface UserData {
   avatar: string;
 }
 
-export interface LoaderData {
+export interface SessionLoaderData {
   user: UserData;
 }
 

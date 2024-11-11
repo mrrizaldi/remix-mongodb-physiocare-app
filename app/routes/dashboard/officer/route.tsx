@@ -1,4 +1,4 @@
-import { json, LoaderFunction } from "@remix-run/node";
+import { LoaderFunction } from "@remix-run/node";
 import { protectRoute } from "~/utils/middleware.server";
 
 export default function DashboardIndexRoute() {

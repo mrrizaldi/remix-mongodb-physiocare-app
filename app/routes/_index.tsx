@@ -1,7 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
-import { Link, useNavigate } from "@remix-run/react";
-import { json, LoaderFunction, redirect } from "@remix-run/node";
-import { getUser } from "~/utils/session.server";
+import { useNavigate } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -26,17 +24,6 @@ import {
   ArrowRight,
   Heart,
 } from "lucide-react";
-
-export const loader: LoaderFunction = async ({ request }) => {
-  const user = await getUser(request);
-
-  if (!user) {
-    return redirect("/login");
-  }
-
-  console.log("ini dari loader dashboard", user);
-  return json({ user });
-};
 
 export default function LandingPage() {
   const features = [

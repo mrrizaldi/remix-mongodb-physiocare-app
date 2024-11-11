@@ -3,9 +3,14 @@ import { json, LoaderFunction } from "@remix-run/node";
 import SidebarComponent from "./sidebar";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 import { protectRoute } from "~/utils/middleware.server";
-import { LoaderData } from "~/types/auth";
+import { SessionLoaderData } from "~/types/auth";
 
 export default function DashboardLayout() {
+  const matches = useMatches();
+  console.log(
+    "Available routes:",
+    matches.map((m) => m.id)
+  );
   return (
     <div>
       <SidebarProvider>
@@ -23,7 +28,7 @@ export default function DashboardLayout() {
 export const loader: LoaderFunction = async ({ request }) => {
   const response = await protectRoute(request);
   const data = await response.json();
-  return json<LoaderData>({
+  return json<SessionLoaderData>({
     user: data.tokenPayload,
   });
 };

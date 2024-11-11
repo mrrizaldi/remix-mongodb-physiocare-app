@@ -12,7 +12,7 @@ export const protectRoute = async (
 
   if (!token) {
     console.log("tidak ada token.");
-    return redirect("/login");
+    return redirect("/");
   }
 
   try {
@@ -24,7 +24,7 @@ export const protectRoute = async (
 
     return json({ tokenPayload });
   } catch (error) {
-    return redirect("/login");
+    return redirect("/");
   }
 };
 
