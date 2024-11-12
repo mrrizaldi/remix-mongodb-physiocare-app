@@ -3,6 +3,7 @@ import {
   useNavigate,
   useActionData,
   useNavigation,
+  useRevalidator,
 } from "@remix-run/react";
 import {
   Card,
@@ -21,24 +22,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { ProfileUpdateFormProps } from "~/types/profile";
+import { z } from "zod";
+import type { Profile, UpdateProfileInput } from "~/schema/profile";
 
-export default function ProfileUpdateForm({ profile }: ProfileUpdateFormProps) {
+export default function ProfileUpdateForm({ profile }: { profile: Profile }) {
   const actionData = useActionData<{
-    errors?: {
-      name?: string[];
-      dob?: string[];
-      age?: string[];
-      gender?: string[];
-      address?: string[];
-      phone?: string[];
-      username?: string[];
-      email?: string[];
-    };
+    errors?: z.ZodError<UpdateProfileInput>;
     error?: string;
   }>();
   const navigate = useNavigate();
   const transition = useNavigation();
+  const { revalidate } = useRevalidator();
   const isSubmitting = transition.state === "submitting";
 
   return (
@@ -58,12 +52,18 @@ export default function ProfileUpdateForm({ profile }: ProfileUpdateFormProps) {
                 defaultValue={profile.name}
                 required
               />
+              {actionData?.errors?.errors?.find(
+                (e) => e.path[0] === "name"
+              ) && (
+                <p className="text-sm text-destructive">
+                  {
+                    actionData.errors.errors.find((e) => e.path[0] === "name")
+                      ?.message
+                  }
+                </p>
+              )}
             </div>
-            {actionData?.errors?.name && (
-              <p className="mt-1 text-sm text-destructive">
-                {actionData.errors.name[0]}
-              </p>
-            )}
+
             <div className="grid gap-2">
               <Label htmlFor="dob">Date of Birth</Label>
               <Input
@@ -76,29 +76,37 @@ export default function ProfileUpdateForm({ profile }: ProfileUpdateFormProps) {
                     : ""
                 }
               />
+              {actionData?.errors?.errors?.find((e) => e.path[0] === "dob") && (
+                <p className="text-sm text-destructive">
+                  {
+                    actionData.errors.errors.find((e) => e.path[0] === "dob")
+                      ?.message
+                  }
+                </p>
+              )}
             </div>
-            {actionData?.errors?.dob && (
-              <p className="mt-1 text-sm text-destructive">
-                {actionData.errors.dob[0]}
-              </p>
-            )}
+
             <div className="grid gap-2">
               <Label htmlFor="age">Age</Label>
               <Input
                 id="age"
                 name="age"
                 type="number"
-                defaultValue={profile.age}
+                defaultValue={profile.age ?? ""}
               />
+              {actionData?.errors?.errors?.find((e) => e.path[0] === "age") && (
+                <p className="text-sm text-destructive">
+                  {
+                    actionData.errors.errors.find((e) => e.path[0] === "age")
+                      ?.message
+                  }
+                </p>
+              )}
             </div>
-            {actionData?.errors?.age && (
-              <p className="mt-1 text-sm text-destructive">
-                {actionData.errors.age[0]}
-              </p>
-            )}
+
             <div className="grid gap-2">
               <Label htmlFor="gender">Gender</Label>
-              <Select defaultValue={profile.gender}>
+              <Select name="gender" defaultValue={profile.gender ?? ""}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select gender" />
                 </SelectTrigger>
@@ -108,65 +116,62 @@ export default function ProfileUpdateForm({ profile }: ProfileUpdateFormProps) {
                   <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
+              {actionData?.errors?.errors?.find(
+                (e) => e.path[0] === "gender"
+              ) && (
+                <p className="text-sm text-destructive">
+                  {
+                    actionData.errors.errors.find((e) => e.path[0] === "gender")
+                      ?.message
+                  }
+                </p>
+              )}
             </div>
-            {actionData?.errors?.gender && (
-              <p className="mt-1 text-sm text-destructive">
-                {actionData.errors.gender[0]}
-              </p>
-            )}
 
             <div className="grid gap-2">
               <Label htmlFor="address">Address</Label>
               <Input
                 id="address"
                 name="address"
-                defaultValue={profile.address}
+                defaultValue={profile.address ?? ""}
               />
+              {actionData?.errors?.errors?.find(
+                (e) => e.path[0] === "address"
+              ) && (
+                <p className="text-sm text-destructive">
+                  {
+                    actionData.errors.errors.find(
+                      (e) => e.path[0] === "address"
+                    )?.message
+                  }
+                </p>
+              )}
             </div>
-            {actionData?.errors?.address && (
-              <p className="mt-1 text-sm text-destructive">
-                {actionData.errors.address[0]}
-              </p>
-            )}
+
             <div className="grid gap-2">
               <Label htmlFor="phone">Phone</Label>
-              <Input id="phone" name="phone" defaultValue={profile.phone} />
-            </div>
-            {actionData?.errors?.phone && (
-              <p className="mt-1 text-sm text-destructive">
-                {actionData.errors.phone[0]}
-              </p>
-            )}
-            <div className="grid gap-2">
-              <Label htmlFor="username">Username</Label>
               <Input
-                id="username"
-                name="username"
-                defaultValue={profile.account.username}
-                required
+                id="phone"
+                name="phone"
+                defaultValue={profile.phone ?? ""}
               />
-            </div>
-            {actionData?.errors?.username && (
-              <p className="mt-1 text-sm text-destructive">
-                {actionData.errors.username[0]}
-              </p>
-            )}
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                defaultValue={profile.account.email}
-                required
-              />
+              {actionData?.errors?.errors?.find(
+                (e) => e.path[0] === "phone"
+              ) && (
+                <p className="text-sm text-destructive">
+                  {
+                    actionData.errors.errors.find((e) => e.path[0] === "phone")
+                      ?.message
+                  }
+                </p>
+              )}
             </div>
           </div>
-          {actionData?.errors?.email && (
-            <p className="mt-1 text-sm text-destructive">
-              {actionData.errors.email[0]}
-            </p>
+
+          {actionData?.error && (
+            <p className="text-sm text-destructive">{actionData.error}</p>
           )}
+
           <div className="flex justify-between pt-4">
             <Button
               type="button"

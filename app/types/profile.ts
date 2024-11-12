@@ -7,15 +7,16 @@ export interface IAccount {
 }
 
 export interface IProfile {
+  id: number;
   name: string;
-  dob?: Date;
-  age?: number;
-  gender?: string;
-  address?: string;
-  phone?: string;
-  account: IAccount;
-  createdAt?: Date;
-  updatedAt?: Date;
+  dob: Date | null;
+  age: number | null;
+  gender: string | null;
+  address: string | null;
+  phone: string | null;
+  account: IAccount | null;
+  created_at: Date;
+  updated_at: Date | null;
 }
 
 export interface ProfileDisplayProps {

@@ -7,7 +7,11 @@ export interface UserData {
 }
 
 export interface SessionLoaderData {
-  user: UserData;
+  user: UserData | null;
+}
+
+export interface AuthResult {
+  tokenPayload: UserData;
 }
 
 export interface IProfile {

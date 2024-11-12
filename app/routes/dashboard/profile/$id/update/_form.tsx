@@ -1,8 +1,7 @@
 // app/routes/update.tsx
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { redirect, useLoaderData, useMatches } from "@remix-run/react";
+import { redirect, useLoaderData } from "@remix-run/react";
 import ProfileUpdateForm from "~/components/ProfileForm";
-import type { IProfile, ProfileUpdateFormProps } from "~/types/profile";
 import { getProfile, updateProfile } from "~/utils/profile.server";
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -28,47 +27,51 @@ export const loader: LoaderFunction = async ({ params }) => {
   }
 };
 
+import { Profile, UpdateProfileSchema } from "~/schema/profile";
+
 export const action: ActionFunction = async ({ request, params }) => {
-  const formData = await request.formData();
-  // Helper function to safely convert FormDataEntryValue to string
-  const getString = (value: FormDataEntryValue | null): string | undefined => {
-    if (value === null || value === "") return undefined;
-    return value.toString();
-  };
-
-  // Helper function to safely convert FormDataEntryValue to number
-  const getNumber = (value: FormDataEntryValue | null): number | undefined => {
-    if (value === null || value === "") return undefined;
-    const num = Number(value);
-    return isNaN(num) ? undefined : num;
-  };
-
-  const updates: Partial<IProfile> = {
-    name: getString(formData.get("name")),
-    age: getNumber(formData.get("age")),
-    gender: getString(formData.get("gender")),
-    address: getString(formData.get("address")),
-    phone: getString(formData.get("phone")),
-  };
-
-  // Remove undefined values
-  Object.keys(updates).forEach((key) => {
-    if (updates[key as keyof typeof updates] === undefined) {
-      delete updates[key as keyof typeof updates];
-    }
-  });
-
   try {
-    await updateProfile(params.id!, updates);
-    return redirect(`/dashboard/profile/${params.id}`);
+    if (!params.id) {
+      return { error: "Profile ID is required" };
+    }
+
+    const formData = await request.formData();
+
+    const rawUpdates: Record<string, FormDataEntryValue | null> = {};
+
+    formData.forEach((value, key) => {
+      rawUpdates[key] = value === "" ? null : value;
+    });
+
+    const updates = {
+      name: rawUpdates.name?.toString(),
+      dob: rawUpdates.dob ? new Date(rawUpdates.dob.toString()) : null,
+      age: rawUpdates.age ? Number(rawUpdates.age) : null,
+      gender: rawUpdates.gender?.toString() ?? null,
+      address: rawUpdates.address?.toString() ?? null,
+      phone: rawUpdates.phone?.toString() ?? null,
+    };
+
+    const validationResult = UpdateProfileSchema.safeParse(updates);
+
+    if (!validationResult.success) {
+      return { errors: validationResult.error };
+    }
+
+    await updateProfile(params.id, validationResult.data);
+
+    return redirect(`/dashboard/profile/${params.id}`, {
+      headers: {
+        "X-Remix-Revalidate": "true",
+      },
+    });
   } catch (error) {
     console.error("Update error:", error);
     return { error: "Failed to update profile" };
   }
 };
-
 export default function UpdateProfilePage() {
-  const { profile } = useLoaderData<ProfileUpdateFormProps>();
+  const { profile } = useLoaderData<{ profile: Profile | null }>();
   if (!profile) {
     return <div>Loading profile...</div>;
   }

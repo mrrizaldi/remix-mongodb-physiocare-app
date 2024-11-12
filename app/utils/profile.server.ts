@@ -12,6 +12,7 @@ export async function updateProfile(
   userId: string,
   profileData: Partial<IProfile>
 ) {
+  await connectDB();
   const profile = await Profile.findByIdAndUpdate(userId, profileData, {
     new: true,
     runValidators: true,

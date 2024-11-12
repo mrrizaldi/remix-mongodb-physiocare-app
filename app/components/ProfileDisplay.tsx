@@ -14,7 +14,6 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Add validation check
   if (!profile) {
     return (
       <Card className="w-full max-w-2xl mx-auto">
@@ -26,7 +25,7 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
     );
   }
 
-  const formatDate = (date: Date | string | undefined): string => {
+  const formatDate = (date: Date | string | null): string => {
     if (!date) return "-";
     return new Date(date).toLocaleDateString("id-ID", {
       year: "numeric",
