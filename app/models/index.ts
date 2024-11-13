@@ -19,7 +19,6 @@ export const SessionTypes = {
 export const SchedulingStatus = {
   WAITING: "WAITING",
   CONFIRMED: "CONFIRMED",
-  COMPLETED: "COMPLETED",
   CANCELLED: "CANCELLED",
 };
 

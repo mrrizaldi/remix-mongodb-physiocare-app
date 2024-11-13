@@ -37,7 +37,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
 
     const { headers, profile } = await login({ ...result.data, request });
-    console.log(profile.account.role.toLowerCase());
     return redirect(`/dashboard/${profile.account.role.toLowerCase()}`, {
       headers,
     });

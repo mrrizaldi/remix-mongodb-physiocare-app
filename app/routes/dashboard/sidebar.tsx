@@ -1,4 +1,3 @@
-import { Home, Calendar, FileText, CreditCard, User } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
@@ -12,27 +11,28 @@ import {
   SidebarRail,
 } from "~/components/ui/sidebar";
 import { useAuth } from "./useAuth";
-import { Link, useLocation } from "@remix-run/react";
+import { Link, useLocation, useNavigate } from "@remix-run/react";
 import LogoutButton from "../../components/LogoutButton";
-
-const menuUserItems = [
-  { icon: Home, label: "Home", href: "/dashboard" },
-  { icon: Calendar, label: "Scheduling", href: "/dashboard/scheduling" },
-  { icon: FileText, label: "Medical Records", href: "/dashboard/records" },
-  { icon: CreditCard, label: "Service", href: "/dashboard/services" },
-];
-
-const menuStaffItems = [
-  { icon: Home, label: "Home", href: "/dashboard" },
-  { icon: Calendar, label: "Scheduling", href: "/dashboard/scheduling" },
-  { icon: FileText, label: "Medical Records", href: "/dashboard/records" },
-];
+import { getPagesByRole, PageListsType } from "./pageLists";
 
 export default function SidebarComponent() {
-  const { user } = useAuth();
-  const menuItems = user?.role === "STAFF" ? menuStaffItems : menuUserItems;
   const location = useLocation();
   const pathname = location.pathname;
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  if (!user) {
+    navigate("/login");
+    return null;
+  }
+  const basePath = pathname.split("/").slice(0, 3).join("/");
+
+  const PageLists = getPagesByRole(user.role, basePath);
+
+  if (PageLists.length === 0) {
+    navigate("/login");
+    return null;
+  }
 
   return (
     <Sidebar className="border-r">
@@ -68,7 +68,7 @@ export default function SidebarComponent() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
-          {menuItems.map((item) => (
+          {PageLists.map((item: PageListsType) => (
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton asChild>
                 <Link

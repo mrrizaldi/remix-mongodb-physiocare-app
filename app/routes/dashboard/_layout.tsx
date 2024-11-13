@@ -1,4 +1,4 @@
-import { Outlet, useMatches, useRouteError } from "@remix-run/react";
+import { Outlet, useRouteError } from "@remix-run/react";
 import { json, LoaderFunction } from "@remix-run/node";
 import SidebarComponent from "./sidebar";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
@@ -6,11 +6,6 @@ import { protectRoute } from "~/utils/middleware.server";
 import { SessionLoaderData } from "~/types/auth";
 
 export default function DashboardLayout() {
-  const matches = useMatches();
-  console.log(
-    "Available routes:",
-    matches.map((m) => m.id)
-  );
   return (
     <div>
       <SidebarProvider>

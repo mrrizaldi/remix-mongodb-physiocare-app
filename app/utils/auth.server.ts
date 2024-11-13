@@ -19,8 +19,6 @@ export async function login({
   password: string;
   request: Request;
 }) {
-  await connectDB();
-
   const profile = await getProfileByEmail(email);
 
   if (!profile || !(await bcrypt.compare(password, profile.account.password))) {
@@ -69,13 +67,11 @@ export async function register({
     throw json({ message: "User already exists" }, { status: 400 });
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-
   const defaultValues = {
     name: username,
     account: {
       email,
-      password: hashedPassword,
+      password,
       username,
       role: RoleTypes.PATIENT,
     },

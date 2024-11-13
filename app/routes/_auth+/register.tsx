@@ -56,7 +56,6 @@ export const action = async ({
     });
     return redirect("/dashboard", { headers });
   } catch (error: any) {
-    console.log("error cuy", error);
     return json(
       {
         error: error.message || "An error occurred during registration",

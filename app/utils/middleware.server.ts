@@ -11,7 +11,6 @@ export const protectRoute = async (
   const token = session.get("token");
 
   if (!token) {
-    console.log("tidak ada token.");
     return redirect("/");
   }
 

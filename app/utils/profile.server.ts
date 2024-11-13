@@ -29,7 +29,7 @@ export async function createManyProfiles(data: ProfileType[]) {
 export async function getProfiles() {
   await connectDB();
   const profiles = await Profile.find().lean();
-  return profiles as ProfileType | null;
+  return profiles;
 }
 
 export async function getProfile(id: string) {
