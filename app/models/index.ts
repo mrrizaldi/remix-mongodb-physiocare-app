@@ -18,7 +18,7 @@ export const SessionTypes = {
 
 export const SchedulingStatus = {
   WAITING: "WAITING",
-  SCHEDULED: "SCHEDULED",
+  CONFIRMED: "CONFIRMED",
   COMPLETED: "COMPLETED",
   CANCELLED: "CANCELLED",
 };
@@ -41,8 +41,9 @@ export const Days = {
 
 export const InventoryTypes = {
   MEDICINE: "MEDICINE",
-  AID: "AID",
-  OTHER: "OTHER",
+  AIDS: "AIDS",
+  EQUIPMENT: "EQUIPMENT",
+  SUPPLY: "SUPPLY",
 };
 
 // Profile Schema (Base for both Staff and Patients)

@@ -1,5 +1,4 @@
-import { createCookieSessionStorage, json, redirect } from "@remix-run/node";
-import { parseJWT } from "./parseJWT";
+import { createCookieSessionStorage } from "@remix-run/node";
 
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
@@ -14,19 +13,3 @@ export const sessionStorage = createCookieSessionStorage({
 });
 
 export const { commitSession, destroySession, getSession } = sessionStorage;
-
-export async function getUser(request: Request) {
-  const session = await getSession(request.headers.get("Cookie"));
-  const token = session.get("token");
-
-  if (!token) {
-    return redirect("/login");
-  }
-
-  const payload = parseJWT(token);
-  if (!payload) {
-    return redirect("/login");
-  }
-
-  return payload;
-}

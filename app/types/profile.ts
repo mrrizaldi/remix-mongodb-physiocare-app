@@ -1,28 +1,41 @@
-// Define types
-export interface IAccount {
-  username: string;
-  email: string;
-  password: string;
-  role: string;
-}
-
 export interface IProfile {
-  id: number;
+  _id: string;
   name: string;
-  dob: Date | null;
-  age: number | null;
-  gender: string | null;
-  address: string | null;
-  phone: string | null;
-  account: IAccount | null;
-  created_at: Date;
-  updated_at: Date | null;
-}
-
-export interface ProfileDisplayProps {
-  profile: IProfile | null;
-}
-
-export interface ProfileUpdateFormProps {
-  profile: IProfile;
+  dob?: Date;
+  age?: number;
+  gender?: string;
+  address?: string;
+  phone?: string;
+  account: {
+    username: string;
+    email: string;
+    password: string;
+    role: string;
+  };
+  staff?: {
+    position: {
+      name: string;
+      maxSalary?: number;
+      minSalary?: number;
+    };
+    salary: number;
+    joinDate: Date;
+    active: boolean;
+    specialties?: Array<{
+      serviceId: string;
+      startDate: Date;
+      endDate?: Date;
+      active: boolean;
+    }>;
+    schedule?: Array<{
+      day: string;
+      isActive: boolean;
+      capacities: Array<{
+        session: string;
+        maxPatients: number;
+      }>;
+    }>;
+  };
+  createdAt: Date;
+  updatedAt: Date;
 }
