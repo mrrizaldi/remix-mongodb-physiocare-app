@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { SessionTypes } from "~/schema/profile";
+import { ObjectId } from "mongodb";
 
 export enum SchedulingStatus {
   PENDING = "PENDING",
@@ -12,18 +13,20 @@ export enum PaymentStatus {
   PAID = "PAID",
   CANCELLED = "CANCELLED",
 }
+const objectIdSchema = z
+  .string()
+  .refine((val) => ObjectId.isValid(val), {
+    message: "Invalid ObjectId",
+  })
+  .transform((val) => new ObjectId(val));
 
-export const schedulingSchema = z.object({
-  staffId: z.string(), // ObjectId as string
-  patientId: z.string(), // ObjectId as string
-  serviceId: z.string(), // ObjectId as string
+export const CreateSchedulingSchema = z.object({
+  staffId: objectIdSchema,
+  patientId: objectIdSchema,
+  serviceId: objectIdSchema,
   date: z.date(),
   session: z.enum(Object.values(SessionTypes) as [string, ...string[]]),
-  status: z.enum(Object.values(SchedulingStatus) as [string, ...string[]]),
-  payment: z.object({
-    amount: z.number(),
-    status: z.enum(Object.values(PaymentStatus) as [string, ...string[]]),
-    paymentMethod: z.string().optional(),
-  }),
-  medicalRecordId: z.string().optional(), // ObjectId as string
+  paymentAmount: z.number().optional(),
 });
+
+export type CreateScheduleInput = z.infer<typeof CreateSchedulingSchema>;

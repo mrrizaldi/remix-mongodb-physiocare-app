@@ -81,7 +81,7 @@ function createDoctorProfiles(services: any[]) {
           password: "password123",
           role: RoleTypes.DOCTOR,
         },
-        staff: {
+        staffDetails: {
           position: {
             name: "Specialist Doctor",
             minSalary: 10000000,
@@ -148,7 +148,7 @@ const officerSamples = [
     password: "password123",
     role: RoleTypes.OFFICER,
   },
-  staff: {
+  staffDetails: {
     position: {
       name: "Medical Officer",
       minSalary: 5000000,
@@ -189,7 +189,7 @@ const adminSamples = [
     password: "password123",
     role: RoleTypes.ADMIN,
   },
-  staff: {
+  staffDetails: {
     position: {
       name: "System Administrator",
       minSalary: 8000000,

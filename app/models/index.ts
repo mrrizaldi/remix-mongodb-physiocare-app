@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { StaffSchema } from "~/schema/profile";
 const Schema = mongoose.Schema;
 
 // Schemas for enums as objects for better maintainability
@@ -45,25 +46,6 @@ export const InventoryTypes = {
   SUPPLY: "SUPPLY",
 };
 
-// Profile Schema (Base for both Staff and Patients)
-const profileSchema = new Schema(
-  {
-    name: { type: String, required: true },
-    dob: Date,
-    age: Number,
-    gender: String,
-    address: String,
-    phone: String,
-    account: {
-      username: { type: String, required: true, unique: true },
-      email: { type: String, required: true, unique: true },
-      password: { type: String, required: true },
-      role: { type: String, enum: Object.values(RoleTypes), required: true },
-    },
-  },
-  { timestamps: true }
-);
-
 // Staff Schema (Embedded in Profile when role is STAFF)
 const staffSchema = new Schema(
   {
@@ -96,6 +78,33 @@ const staffSchema = new Schema(
         ],
       },
     ],
+  },
+  { timestamps: true }
+);
+
+const accountSchema = new Schema({
+  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role: { type: String, enum: Object.values(RoleTypes), required: true },
+});
+
+// Profile Schema (Base for both Staff and Patients)
+const profileSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    dob: Date,
+    age: Number,
+    gender: String,
+    address: String,
+    phone: String,
+    account: { type: accountSchema, required: true },
+    staffDetails: {
+      type: staffSchema,
+      required: function (this: any) {
+        return this.account?.role !== RoleTypes.PATIENT;
+      },
+    },
   },
   { timestamps: true }
 );

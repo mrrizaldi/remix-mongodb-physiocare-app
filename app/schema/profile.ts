@@ -89,7 +89,7 @@ export const ProfileSchema = z.object({
   address: z.string().optional(),
   phone: z.string().optional(),
   account: AccountSchema,
-  staff: z.union([StaffSchema, z.null()]).optional(),
+  staffDetails: z.union([StaffSchema, z.null()]).optional(),
 });
 
 export const CreateProfileSchema = ProfileSchema.omit({
@@ -98,7 +98,7 @@ export const CreateProfileSchema = ProfileSchema.omit({
   age: true,
   phone: true,
   address: true,
-  staff: true,
+  staffDetails: true,
 });
 export const UpdateProfileSchema = ProfileSchema.partial();
 
