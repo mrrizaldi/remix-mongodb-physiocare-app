@@ -25,7 +25,7 @@ export default function SidebarComponent() {
     navigate("/login");
     return null;
   }
-  const basePath = pathname.split("/").slice(0, 3).join("/");
+  const basePath = pathname.split("/").slice(0, 2).join("/");
 
   const PageLists = getPagesByRole(user.role, basePath);
 
