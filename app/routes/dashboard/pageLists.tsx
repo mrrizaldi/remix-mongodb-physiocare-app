@@ -39,7 +39,7 @@ export const PatientPages = (basePath: string) => [
   {
     icon: CalendarCheck,
     label: "Scheduling",
-    href: `${basePath}/patient/scheduling`,
+    href: `${basePath}/patient/schedule`,
     description: "Manage your appointments",
   },
   {

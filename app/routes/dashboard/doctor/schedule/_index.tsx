@@ -1,6 +1,11 @@
-// routes/dashboard/patient/scheduling/_index.tsx
-import { json, LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData, useRouteError } from "@remix-run/react";
+// routes/dashboard/doctor/scheduling/_index.tsx
+import { json, LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
+import {
+  useLoaderData,
+  useNavigation,
+  Form,
+  useRouteError,
+} from "@remix-run/react";
 import {
   Table,
   TableBody,
@@ -17,15 +22,24 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { Button } from "~/components/ui/button";
 import { protectRoute } from "~/utils/middleware.server";
-import { displayScheduleForPatient } from "~/utils/schedule.server";
+import { findDoctorSchedulingById } from "~/utils/doctor.server";
+import { getScheduleById } from "~/utils/schedule.server";
 
 type LoaderData = {
   schedules: Array<{
     id: string;
     date: string;
     session: string;
-    staff: {
+    patient: {
       id: string;
       name: string;
     };
@@ -44,24 +58,23 @@ type LoaderData = {
 
 export async function loader({ request }: LoaderFunctionArgs) {
   try {
-    // Authenticate user
     const response = await protectRoute(request);
     const { tokenPayload: user } = await response.json();
 
-    if (!user) {
+    if (!user || user.role !== "DOCTOR") {
       throw new Response("Unauthorized", { status: 401 });
     }
 
-    const schedules = await displayScheduleForPatient(user.id);
+    const schedules = await findDoctorSchedulingById(user.id);
 
     return json({
       schedules: schedules.map((schedule) => ({
         id: schedule._id.toString(),
         date: schedule.date,
         session: schedule.session,
-        staff: {
-          id: schedule.staffId._id.toString(),
-          name: schedule.staffId.name,
+        patient: {
+          id: schedule.patientId._id.toString(),
+          name: schedule.patientId.name,
         },
         service: {
           id: schedule.serviceId._id.toString(),
@@ -73,8 +86,56 @@ export async function loader({ request }: LoaderFunctionArgs) {
       })),
     });
   } catch (error) {
-    console.error("Scheduling loader error:", error);
+    console.error("Doctor scheduling loader error:", error);
     throw error;
+  }
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+  try {
+    const formData = await request.formData();
+    const scheduleId = formData.get("scheduleId") as string;
+    const newStatus = formData.get("status") as string;
+
+    // Validate input
+    if (!scheduleId || !newStatus) {
+      throw new Error("Invalid input");
+    }
+
+    // Authenticate doctor
+    const response = await protectRoute(request);
+    const { tokenPayload: user } = await response.json();
+
+    if (!user || user.role !== "DOCTOR") {
+      throw new Response("Unauthorized", { status: 401 });
+    }
+
+    const schedule = await getScheduleById(scheduleId);
+
+    if (!schedule) {
+      throw new Error("Schedule not found");
+    }
+
+    // Check if status was already changed from WAITING
+    if (schedule.status !== "WAITING") {
+      throw new Error("Status can only be changed once");
+    }
+
+    // Update status
+    schedule.status = newStatus;
+    await schedule.save();
+
+    return json({ success: true });
+  } catch (error) {
+    console.error("Update status error:", error);
+    return json(
+      {
+        errors: {
+          submit: error instanceof Error ? error.message : "Update failed",
+        },
+      },
+      { status: 400 }
+    );
   }
 }
 
@@ -106,28 +167,28 @@ function getPaymentStatusColor(status: string) {
   }
 }
 
-export default function SchedulingPage() {
+export default function DoctorSchedulingPage() {
   const { schedules } = useLoaderData<LoaderData>();
+  const navigation = useNavigation();
+  const isUpdating = navigation.state === "submitting";
 
   return (
     <div className="container mx-auto py-10">
       <Card>
         <CardHeader>
-          <CardTitle>My Appointments</CardTitle>
-          <CardDescription>
-            View and manage your scheduled appointments
-          </CardDescription>
+          <CardTitle>Patient Appointments</CardTitle>
+          <CardDescription>Manage your patient appointments</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Date & Time</TableHead>
+                <TableHead>Patient</TableHead>
                 <TableHead>Service</TableHead>
-                <TableHead>Doctor</TableHead>
-                <TableHead>Status</TableHead>
                 <TableHead>Payment Status</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -146,8 +207,16 @@ export default function SchedulingPage() {
                       {schedule.session}
                     </div>
                   </TableCell>
+                  <TableCell>{schedule.patient.name}</TableCell>
                   <TableCell>{schedule.service.name}</TableCell>
-                  <TableCell>Dr. {schedule.staff.name}</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant="outline"
+                      className={getPaymentStatusColor(schedule.payment.status)}
+                    >
+                      {schedule.payment.status}
+                    </Badge>
+                  </TableCell>
                   <TableCell>
                     <Badge
                       variant="outline"
@@ -157,15 +226,28 @@ export default function SchedulingPage() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge
-                      variant="outline"
-                      className={getPaymentStatusColor(schedule.payment.status)}
-                    >
-                      {schedule.payment.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    Rp {schedule.payment.amount.toLocaleString("id-ID")}
+                    {schedule.status === "WAITING" &&
+                      schedule.payment.status === "PAID" && (
+                        <Form method="post" className="flex items-center gap-2">
+                          <input
+                            type="hidden"
+                            name="scheduleId"
+                            value={schedule.id}
+                          />
+                          <Select name="status" defaultValue="">
+                            <SelectTrigger className="w-[140px]">
+                              <SelectValue placeholder="Update status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="CONFIRMED">Confirm</SelectItem>
+                              <SelectItem value="CANCELLED">Cancel</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <Button type="submit" disabled={isUpdating} size="sm">
+                            {isUpdating ? "Updating..." : "Update"}
+                          </Button>
+                        </Form>
+                      )}
                   </TableCell>
                 </TableRow>
               ))}

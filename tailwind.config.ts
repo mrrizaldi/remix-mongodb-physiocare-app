@@ -34,21 +34,21 @@ export default {
           foreground: "hsl(var(--popover-foreground))",
         },
         primary: {
-          DEFAULT: "hsl(215, 100%, 50%)", // Vivid blue
-          50: "hsl(215, 100%, 97%)",
-          100: "hsl(215, 100%, 95%)",
-          200: "hsl(215, 100%, 90%)",
-          300: "hsl(215, 100%, 80%)",
-          400: "hsl(215, 100%, 70%)",
-          500: "hsl(215, 100%, 50%)", // Same as DEFAULT
-          600: "hsl(215, 100%, 45%)",
-          700: "hsl(215, 100%, 40%)",
-          800: "hsl(215, 100%, 35%)",
-          900: "hsl(215, 100%, 30%)",
+          "50": "hsl(215, 100%, 97%)",
+          "100": "hsl(215, 100%, 95%)",
+          "200": "hsl(215, 100%, 90%)",
+          "300": "hsl(215, 100%, 80%)",
+          "400": "hsl(215, 100%, 70%)",
+          "500": "hsl(215, 100%, 50%)",
+          "600": "hsl(215, 100%, 45%)",
+          "700": "hsl(215, 100%, 40%)",
+          "800": "hsl(215, 100%, 35%)",
+          "900": "hsl(215, 100%, 30%)",
+          DEFAULT: "hsl(215, 100%, 50%)",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "hsl(215, 30%, 95%)", // Light blue-grey
+          DEFAULT: "hsl(215, 30%, 95%)",
           foreground: "hsl(215, 30%, 20%)",
         },
         muted: {
@@ -56,23 +56,45 @@ export default {
           foreground: "hsl(215, 20%, 45%)",
         },
         accent: {
-          DEFAULT: "hsl(195, 90%, 50%)", // Cyan accent
+          DEFAULT: "hsl(195, 90%, 50%)",
           foreground: "hsl(195, 90%, 10%)",
         },
         destructive: {
-          DEFAULT: "hsl(0, 100%, 45%)", // Red for destructive actions
+          DEFAULT: "hsl(0, 100%, 45%)",
           foreground: "hsl(0, 0%, 100%)",
         },
         border: "hsl(215, 20%, 85%)",
         input: "hsl(215, 20%, 90%)",
         ring: "hsl(215, 100%, 50%)",
         chart: {
-          "1": "hsl(215, 100%, 50%)", // Primary blue
-          "2": "hsl(195, 90%, 50%)", // Cyan
-          "3": "hsl(235, 90%, 60%)", // Indigo
-          "4": "hsl(180, 80%, 45%)", // Teal
-          "5": "hsl(205, 85%, 55%)", // Light blue
+          "1": "hsl(215, 100%, 50%)",
+          "2": "hsl(195, 90%, 50%)",
+          "3": "hsl(235, 90%, 60%)",
+          "4": "hsl(180, 80%, 45%)",
+          "5": "hsl(205, 85%, 55%)",
         },
+      },
+      keyframes: {
+        "accordion-down": {
+          from: {
+            height: "0",
+          },
+          to: {
+            height: "var(--radix-accordion-content-height)",
+          },
+        },
+        "accordion-up": {
+          from: {
+            height: "var(--radix-accordion-content-height)",
+          },
+          to: {
+            height: "0",
+          },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
   },

@@ -1,10 +1,11 @@
 import { json, LoaderFunction } from "@remix-run/node";
+import { Outlet } from "@remix-run/react";
 import { protectRoute } from "~/utils/middleware.server";
 
 export default function DashboardIndexRoute() {
   return (
     <div>
-      <h1>Dashboard Medics</h1>
+      <Outlet />
     </div>
   );
 }

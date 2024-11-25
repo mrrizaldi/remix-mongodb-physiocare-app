@@ -102,7 +102,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
     await findByIdAndUpdateSchedulingPaymentStatus(scheduleId);
 
-    return redirect("/dashboard/patient/scheduling");
+    return redirect("/dashboard/patient/schedule");
   } catch (error) {
     return json(
       {

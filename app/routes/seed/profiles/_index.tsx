@@ -46,7 +46,6 @@ const patientSamples = [
   },
 }));
 
-// Helper untuk membuat doctor profiles
 function createDoctorProfiles(services: any[]) {
   const doctorBaseNames = [
     { name: "Dr. William Parker", gender: "Male", age: 45 },
@@ -54,20 +53,31 @@ function createDoctorProfiles(services: any[]) {
     { name: "Dr. Richard Lee", gender: "Male", age: 50 },
     { name: "Dr. Jennifer Chen", gender: "Female", age: 42 },
     { name: "Dr. Thomas Anderson", gender: "Male", age: 48 },
+    { name: "Dr. Emily Johnson", gender: "Female", age: 40 },
+    { name: "Dr. Michael Brown", gender: "Male", age: 52 },
+    { name: "Dr. Sarah Davis", gender: "Female", age: 39 },
+    { name: "Dr. David Wilson", gender: "Male", age: 47 },
+    { name: "Dr. Laura Martinez", gender: "Female", age: 44 },
   ];
 
   const doctorProfiles: Profile[] = [];
 
-  for (const service of services) {
-    doctorBaseNames.forEach((doctor, index) => {
+  services.forEach((service, serviceIndex) => {
+    for (let i = 0; i < 5; i++) {
+      const doctorIndex = serviceIndex * 5 + i;
+      const doctor = doctorBaseNames[doctorIndex % doctorBaseNames.length];
+      const uniqueName = `${doctor.name} ${String.fromCharCode(
+        65 + doctorIndex
+      )}`; // Adds A, B, C, etc. to make names unique
+
       const username = generateUsername(
-        doctor.name,
+        uniqueName,
         "DOCTOR",
         doctorProfiles.length + 1
       );
 
       doctorProfiles.push({
-        name: doctor.name,
+        name: uniqueName,
         dob: new Date(
           new Date().setFullYear(new Date().getFullYear() - doctor.age)
         ),
@@ -122,8 +132,8 @@ function createDoctorProfiles(services: any[]) {
           ],
         },
       });
-    });
-  }
+    }
+  });
 
   return doctorProfiles;
 }
